@@ -5,17 +5,25 @@ import 'package:foodapi/model/seafood.dart';
 import '../model/categories.dart';
 import 'package:http/http.dart' as http;
 
-class meals extends StatefulWidget {
+class Meals extends StatefulWidget {
   final Category category;
 
-
-  const meals({Key? key, required this.category}) : super(key: key);
+  const Meals({Key? key, required this.category}) : super(key: key);
 
   @override
-  State<meals> createState() => _mealsState();
+  State<Meals> createState() => _MealsState();
 }
 
-class _mealsState extends State<meals> {
+class _MealsState extends State<Meals> {
+  late Future<void> _apiFuture;
+  late Seafood _seafood;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiFuture = getApi();
+  }
+
   Future<void> getApi() async {
     const String api = "http://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood";
 
@@ -26,37 +34,53 @@ class _mealsState extends State<meals> {
       print(responseData);
 
       setState(() {
-        seafoodd = Seafood.fromJson(responseData);
+        _seafood = Seafood.fromJson(responseData);
       });
     }
   }
 
   @override
-  void initState() {
-    getApi();
-    super.initState();
-  }
-  Seafood? seafoodd;
-  Category? categoryy;
-
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(categoryy?.strCategory ?? ''),
+        title: Text(widget.category.strCategory ?? ''),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(categoryy?.strCategory ?? ''),
-            SizedBox(height: 20),
-            Text(categoryy?.strCategoryDescription ?? ''),
-            // Add more details here as needed
-          ],
+        child: FutureBuilder<void>(
+          future: _apiFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(widget.category.strCategory ?? ''),
+                  SizedBox(height: 20),
+                  Text(widget.category.strCategoryDescription ?? ''),
+                  _buildMealsList(),
+                ],
+              );
+            }
+          },
         ),
       ),
+    );
+  }
+
+  Widget _buildMealsList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: _seafood.meals?.length ?? 0,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(_seafood.meals?[index].strMeal ?? ''),
+          leading: Image.network(_seafood.meals?[index].strMealThumb ?? ''),
+          // You can add more details as needed
+        );
+      },
     );
   }
 }
