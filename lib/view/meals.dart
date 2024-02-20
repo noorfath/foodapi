@@ -45,26 +45,28 @@ class _MealsState extends State<Meals> {
       appBar: AppBar(
         title: Text(widget.category.strCategory ?? ''),
       ),
-      body: Center(
-        child: FutureBuilder<void>(
-          future: _apiFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(widget.category.strCategory ?? ''),
-                  SizedBox(height: 20),
-                  Text(widget.category.strCategoryDescription ?? ''),
-                  _buildMealsList(),
-                ],
-              );
-            }
-          },
+      body: SingleChildScrollView(
+        child: Center(
+          child: FutureBuilder<void>(
+            future: _apiFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(widget.category.strCategory ?? ''),
+                    SizedBox(height: 20),
+                    Text(widget.category.strCategoryDescription ?? ''),
+                    _buildMealsList(),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -78,7 +80,7 @@ class _MealsState extends State<Meals> {
         return ListTile(
           title: Text(_seafood.meals?[index].strMeal ?? ''),
           leading: Image.network(_seafood.meals?[index].strMealThumb ?? ''),
-          // You can add more details as needed
+
         );
       },
     );
