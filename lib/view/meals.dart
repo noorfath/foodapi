@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class meals extends StatefulWidget {
 
 
-  const meals({Key? key, required this.seafood}) : super(key: key);
+  const meals({Key? key, required this.category}) : super(key: key);
 
   @override
   State<meals> createState() => _mealsState();
@@ -51,6 +51,7 @@ class _mealsState extends State<meals> {
           children: [
 
 
+             Image.asset(NetworkImage(category?.strCategoryThumb ?? '') as String);
             Text(category?.strCategory ?? ''),
             SizedBox(height: 20),
             Text(category?.strCategoryDescription ?? ''),
