@@ -6,6 +6,7 @@ import '../model/categories.dart';
 import 'package:http/http.dart' as http;
 
 class meals extends StatefulWidget {
+  final Category category;
 
 
   const meals({Key? key, required this.category}) : super(key: key);
@@ -36,25 +37,22 @@ class _mealsState extends State<meals> {
     super.initState();
   }
   Seafood? seafoodd;
-  Category? category;
+  Category? categoryy;
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(category?.strCategory ?? ''),
+        title: Text(categoryy?.strCategory ?? ''),
       ),
       body: Center(
         child: Column(
-
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-
-             Image.asset(NetworkImage(category?.strCategoryThumb ?? '') as String);
-            Text(category?.strCategory ?? ''),
+            Text(categoryy?.strCategory ?? ''),
             SizedBox(height: 20),
-            Text(category?.strCategoryDescription ?? ''),
+            Text(categoryy?.strCategoryDescription ?? ''),
             // Add more details here as needed
           ],
         ),
